@@ -53,13 +53,21 @@ public class Visit {
         this.table = table;
     }
 
-    public long getDuration() {
-        return duration;
+//    public long getDuration() {
+//        return duration;
+//    }
+
+    public long calculateDuration() {
+        return Duration.between(LocalDateTime.now(), startTime).toMinutes();
     }
 
-    public void calculateDuration(LocalDateTime endTime) {
-        setEndTime(endTime);
-        this.duration = Duration.between(this.endTime, startTime).toMinutes();
+    public double calculateCurrentCost(double pricePerMinute){
+        return calculateDuration() * pricePerMinute;
+    }
+
+    public void finishVisit(){
+        getTable().setFree(true);
+
     }
 
     public double getCost() {
