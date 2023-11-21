@@ -1,12 +1,24 @@
 package org.example;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 
 public class VisitService {
-    private static double pricePerMinute;
+    private static double pricePerMinute = 5;
 
+    public static String getFormatStartTime(Visit visit){
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yy");
+        return dateTimeFormatter.format(visit.getStartTime());
+    }
+
+    public static Visit getVisitById(int visitId){
+        return visits.stream()
+                .filter(v -> v.getId() == visitId)
+                .findFirst().orElseThrow();
+    }
 
     public double getPricePerMinute() {
         return pricePerMinute;
@@ -26,15 +38,29 @@ public class VisitService {
 
     private static List<Visit> visits = new ArrayList<>();
 
-    public static void createVisit(Client client, Table table) {
+    public static Visit createVisit(Client client, int tableId) {
+        Table table = TableService.tables.get(tableId);
         Visit visit = new Visit(client, table, LocalDateTime.now());
         table.setFree(false);
         visits.add(visit);
+        return visit;
+    }
+
+    public static Visit finishVisit(int tableId) {
+        Table table = TableService.tables.get(tableId);
+        Visit visit = visits.stream()
+                        .filter(v -> v.getTable().getId() == tableId && !v.isFinished()).findFirst().orElseThrow();
+        table.setFree(true);
+        visit.setDuration(getCurrentDurationByTableId(tableId));
+        visit.setCost(getCurrentCostByTableId(tableId));
+        visits.add(visit);
+        visit.setFinished(true);
+        return visit;
     }
 
     public static long getCurrentDurationByTableId(int tableId) {
         Visit visit = visits.stream().
-                filter(v -> v.getTable().getId() == tableId).findFirst().orElseThrow();
+                filter(v -> v.getTable().getId() == tableId && !v.isFinished()).findFirst().orElseThrow();
         return visit.calculateDuration();
     }
 
@@ -53,16 +79,27 @@ public class VisitService {
         return visit.calculateCurrentCost(pricePerMinute);
     }
 
+    public static double getCurrentCostByTableId(int tableId){
+        Visit visit = visits.stream().
+                filter(v -> v.getClient().getId() == tableId && !v.isFinished()).findFirst().orElseThrow();
+        return visit.calculateCurrentCost(pricePerMinute);
+    }
+
     public static double getTotalCurrentCost(){
         double totalCost = 0;
         for (Table table: TableService.getReservedTables()) {
            Visit visit = visits.stream()
-                   .filter(v -> v.getTable() == table)
-                   .findFirst().orElseThrow();
+                   .filter(v -> v.getTable() == table && !v.isFinished()).findFirst().orElseThrow();
            totalCost += visit.calculateCurrentCost(pricePerMinute);
 
         }
         return totalCost;
+    }
+
+    public static double getTotalCostOfAllTime(){
+
+        return visits.stream()
+                .filter(Visit::isFinished).mapToDouble(Visit::getCost).sum();
     }
 
     public static List<Table> getFreeTables(){

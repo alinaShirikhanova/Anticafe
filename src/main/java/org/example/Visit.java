@@ -13,6 +13,31 @@ public class Visit {
     private long duration;
 
     private double cost;
+    private boolean isFinished = false;
+
+    public static int getLastId() {
+        return lastId;
+    }
+
+    public static void setLastId(int lastId) {
+        Visit.lastId = lastId;
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    public boolean isFinished() {
+        return isFinished;
+    }
+
+    public void setFinished(boolean finished) {
+        isFinished = finished;
+    }
 
     public LocalDateTime getStartTime() {
         return startTime;
@@ -58,7 +83,7 @@ public class Visit {
 //    }
 
     public long calculateDuration() {
-        return Duration.between(LocalDateTime.now(), startTime).toMinutes();
+        return Duration.between( startTime, LocalDateTime.now()).toSeconds();
     }
 
     public double calculateCurrentCost(double pricePerMinute){
@@ -67,7 +92,6 @@ public class Visit {
 
     public void finishVisit(){
         getTable().setFree(true);
-
     }
 
     public double getCost() {
@@ -84,5 +108,19 @@ public class Visit {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Visit{" +
+                "id=" + id +
+                ", client=" + client +
+                ", table=" + table +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", duration=" + duration +
+                ", cost=" + cost +
+                ", isFinished=" + isFinished +
+                '}';
     }
 }

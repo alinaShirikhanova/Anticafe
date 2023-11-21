@@ -22,4 +22,7 @@ public class Table {
     public void setFree(boolean free) {
         this.free = free;
     }
+    public String toString(){
+        return String.format("Столик №%d", id);
+    }
 }

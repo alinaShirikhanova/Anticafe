@@ -8,21 +8,23 @@ import java.util.Optional;
 public class TableService {
 
 
-    private static Map<Integer, Table> tables = new HashMap<>({{
-            (1, new Table(1),
-        2, new Table(2),
-        3, new Table(3),
-        4, new Table(4)}};
+    public static Map<Integer, Table> tables =  Map.of(
+            1, new Table(1),
+            2, new Table(2),
+            3, new Table(3),
+            4, new Table(4),
+            5, new Table(5),
+            6, new Table(6),
+            7, new Table(7),
+            8, new Table(8),
+            9, new Table(9),
+            10, new Table(10));
 
-    public TableService() {
-        for (int i = 1; i < 10; i++) {
-            tables.put(i, new Table(i));
-        }
+    public static void setTables(Map<Integer, Table> tables) {
+        TableService.tables = tables;
     }
 
-
-
-    public Map<Integer, Table> getTables() {
+    public Map<Integer, Table> getTables()  {
         return tables;
     }
 
