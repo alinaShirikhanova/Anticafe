@@ -83,6 +83,10 @@ public class Main {
 
                 case 9 -> System.out.println(VisitService.getTotalCostOfAllTime());
                 case 12 -> System.out.println(VisitService.getTheMostPopularTable());
+                case 13 ->{
+                    System.out.println(VisitService.getTheMostEarnedTable());
+                    System.out.println(VisitService.getTheMostEarnedTable().getKey());
+                }
 
             }
         }

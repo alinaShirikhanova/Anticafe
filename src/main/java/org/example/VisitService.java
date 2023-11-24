@@ -109,6 +109,13 @@ public class VisitService {
                 .max(Map.Entry.comparingByValue()).orElseThrow();
     }
 
+    public static Map.Entry<Table, DoubleSummaryStatistics> getTheMostEarnedTable(){
+
+        Map<Table, DoubleSummaryStatistics> map = visits.stream()
+                .filter(Visit::isFinished).collect(Collectors.groupingBy(Visit::getTable, Collectors.summarizingDouble(Visit::getCost)));
+        return map.entrySet().stream().max(Comparator.comparing(entry -> entry.getValue().getSum())).orElseThrow();
+    }
+
 
 
     public static List<Table> getFreeTables(){
