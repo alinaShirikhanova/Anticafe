@@ -39,20 +39,26 @@ public class Main {
             int option = in.nextInt();
             switch (option) {
                 case 1 -> {
-                    System.out.println("Список свободных столиков: ");
-                    for (Table table : VisitService.getFreeTables()) {
-                        System.out.println(table);
+                    try {
+                        System.out.println("Список свободных столиков: ");
+                        for (Table table : VisitService.getFreeTables()) {
+                            System.out.println(table);
+                        }
+                        System.out.println("Введите номер столика, который хотите занять: ");
+                        int tableId = in.nextInt();
+                        String name = in.nextLine();
+                        Visit visit = VisitService.createVisit(new Client(name), tableId);
+                        System.out.println("Столик занят");
+                        System.out.printf("Id вашего визита: %d\n" +
+                                "Начало визита: %s", visit.getId(), VisitService.getFormatStartTime(visit));
                     }
-                    System.out.println("Введите номер столика, который хотите занять: ");
-                    int tableId = in.nextInt();
-                    String name = in.nextLine();
-                    Visit visit = VisitService.createVisit(new Client(name), tableId);
-                    System.out.println("Столик занят");
-                    System.out.printf("Id вашего визита: %d\n" +
-                            "Начало визита: %s", visit.getId(), VisitService.getFormatStartTime(visit));
+                    catch (RuntimeException ex){
+                        System.out.println(ex.getMessage());
+                    }
+
                 }
                 case 2 -> {
-//                    System.out.println("Введите id визита: ");
+//                    System.out.println("Введите номер столика, который хотите освободить: ");
 //                    int visitId = in.nextInt();
 //                    Visit visit = VisitService.getVisitById(visitId);
 //                    VisitService.
@@ -87,7 +93,6 @@ public class Main {
                     System.out.println(VisitService.getTheMostEarnedTable());
                     System.out.println(VisitService.getTheMostEarnedTable().getKey());
                 }
-
             }
         }
 

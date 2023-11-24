@@ -38,6 +38,11 @@ public class VisitService {
     private static List<Visit> visits = new ArrayList<>();
 
     public static Visit createVisit(Client client, int tableId) {
+        boolean isPresent = visits.stream()
+                .anyMatch(v -> v.getTable().getId() == tableId && !v.isFinished());
+        if (isPresent){
+            throw new RuntimeException("Этот столик занят");
+        }
         Table table = TableService.tables.get(tableId);
         Visit visit = new Visit(client, table, LocalDateTime.now());
         table.setFree(false);
