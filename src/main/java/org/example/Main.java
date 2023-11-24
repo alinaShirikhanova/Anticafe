@@ -23,8 +23,6 @@ public class Main {
             7. Посмотреть, сколько придется заплатить всем гостям за столиками, если они прямо сейчас покинут антикафе
             8. Завершить визит
             9. Узнать заработок за все время
-            10. Узнать заработок за все время
-            11. Узнать заработок за все время
             12. Узнать, какой столик чаще всего выбирается
             13. Узнать, какой столик больше всего принес в кассу
             14. Получить список всех визитов
@@ -77,10 +75,15 @@ public class Main {
                     System.out.println("Введите номер столика, по которому хотите завершить визит: ");
                     int tableId = in.nextInt();
                     VisitService.finishVisit(tableId);
-                    System.out.println(VisitService.getVisits());
+                    for (Visit visit : VisitService.getVisits()) {
+                        System.out.println("Столик: " + visit.getTable() + " " + visit.isFinished() + " " + visit.getCost() + " рублей " + visit.getDuration() + " секунд");
+                    }
 
                 }
-                case 11 -> System.out.println(VisitService.getTotalCostOfAllTime());
+
+                case 9 -> System.out.println(VisitService.getTotalCostOfAllTime());
+                case 12 -> System.out.println(VisitService.getTheMostPopularTable());
+
             }
         }
 

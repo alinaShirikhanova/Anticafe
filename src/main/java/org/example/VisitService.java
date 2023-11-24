@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 
 public class VisitService {
     private static double pricePerMinute = 5;
@@ -50,11 +49,11 @@ public class VisitService {
         Table table = TableService.tables.get(tableId);
         Visit visit = visits.stream()
                         .filter(v -> v.getTable().getId() == tableId && !v.isFinished()).findFirst().orElseThrow();
-        table.setFree(true);
         visit.setDuration(getCurrentDurationByTableId(tableId));
         visit.setCost(getCurrentCostByTableId(tableId));
-        visits.add(visit);
+
         visit.setFinished(true);
+        table.setFree(true);
         return visit;
     }
 
@@ -81,7 +80,7 @@ public class VisitService {
 
     public static double getCurrentCostByTableId(int tableId){
         Visit visit = visits.stream().
-                filter(v -> v.getClient().getId() == tableId && !v.isFinished()).findFirst().orElseThrow();
+                filter(v -> v.getTable().getId() == tableId && !v.isFinished()).findFirst().orElseThrow();
         return visit.calculateCurrentCost(pricePerMinute);
     }
 
@@ -101,6 +100,16 @@ public class VisitService {
         return visits.stream()
                 .filter(Visit::isFinished).mapToDouble(Visit::getCost).sum();
     }
+
+    public static Map.Entry<Table, Long> getTheMostPopularTable(){
+
+        Map<Table, Long> map = visits.stream()
+                .filter(Visit::isFinished).collect(Collectors.groupingBy(Visit::getTable, Collectors.counting()));
+        return map.entrySet().stream()
+                .max(Map.Entry.comparingByValue()).orElseThrow();
+    }
+
+
 
     public static List<Table> getFreeTables(){
         return TableService.getFreeTables();
